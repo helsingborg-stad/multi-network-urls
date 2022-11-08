@@ -1,6 +1,7 @@
 {
     "name": "helsingborg-stad/multi-network-urls",
     "type": "wordpress-muplugin", 
+    "license": "MIT",
     "authors": [
         {
             "name": "Joel Bernerman",
