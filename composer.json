@@ -1,0 +1,11 @@
+{
+    "name": "helsingborg-stad/multi-network-urls",
+    "type": "wordpress-muplugin", 
+    "authors": [
+        {
+            "name": "Joel Bernerman",
+            "email": "joel.bernerman@helsingborg.se"
+        }
+    ],
+    "require": {}
+}
