@@ -41,6 +41,26 @@ class MultiNetworkUrls
     }
 
     /**
+     * Build the siteurl for a new site.
+     *
+     * WordPress lives in /wp, so the main site of a network and every site in a
+     * subdomain install get https://domain/wp. Sites in a subfolder install
+     * (https://domain/slug) must not have /wp in their siteurl, as
+     * /slug/wp/wp-admin/ is not routable and the admin then resolves to the main site.
+     */
+    public function buildSiteUrl($domain, $sitePath, $networkPath, $isSubdomainInstall)
+    {
+        $sitePath = trim($sitePath, '/');
+        $isMainSite = $sitePath === trim($networkPath, '/');
+
+        if ($isSubdomainInstall || $isMainSite) {
+            return 'https://' . $domain . '/wp';
+        }
+
+        return 'https://' . $domain . '/' . $sitePath;
+    }
+
+    /**
      * Adapt upload path when creating new network.
      */
     public function fixSiteUrl($blog, $args)
@@ -59,7 +79,7 @@ class MultiNetworkUrls
         $uploadUrlPath = 'https://' . $blog->domain . '/wp-content' . $uploadSlug;
 
         global $wpdb;
-        $siteUrl = 'https://' . $blog->domain . '/wp';
+        $siteUrl = $this->buildSiteUrl($blog->domain, $blog->path, $network->path, is_subdomain_install());
         $wpdb->query("UPDATE $wpdb->options SET option_value = '$siteUrl' WHERE option_name = 'siteurl'");
         $wpdb->query("UPDATE $wpdb->options SET option_value = '$uploadPath' WHERE option_name = 'upload_path'");
         $wpdb->query("UPDATE $wpdb->options SET option_value = '$uploadUrlPath' WHERE option_name = 'upload_url_path'");
